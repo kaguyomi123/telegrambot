@@ -1,4 +1,4 @@
-### spring boot telegram bot
+### pet-proj: spring boot telegram bot
 
 commands: /start, /help, /stat, /stop; .....
 
