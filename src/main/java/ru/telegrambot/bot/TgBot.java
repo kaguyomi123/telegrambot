@@ -3,20 +3,29 @@ package ru.telegrambot.bot;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
+import ru.telegrambot.command.CommandContainer;
+import ru.telegrambot.service.SendBotMessageServiceImpl;
 import javax.validation.constraints.NotNull;
+
+import static ru.telegrambot.command.CommandName.NO;
 
 @Component
 public class TgBot extends TelegramLongPollingBot {
+
+    public static String COMMAND_PREFIX = "/";
 
     @Value("${bot.name}")
     private String botName;
 
     @Value("${bot.token}")
     private String botToken;
+
+    private final CommandContainer commandContainer;
+
+    public TgBot() {
+        this.commandContainer = new CommandContainer(new SendBotMessageServiceImpl(this));
+    }
 
     @Override
     public String getBotUsername() {
@@ -30,25 +39,14 @@ public class TgBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(@NotNull Update update) {
-        long chatId;
-        String userName;
-        String receivedMessage;
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            String message = update.getMessage().getText().trim();
+            if (message.startsWith(COMMAND_PREFIX)) {
+                String commandIdentifier = message.split(" ")[0].toLowerCase();
 
-
-        if(update.hasMessage() && update.getMessage().hasText()) {
-            chatId = update.getMessage().getChatId();
-            userName = update.getMessage().getFrom().getFirstName();
-            receivedMessage = update.getMessage().getText();
-
-            SendMessage message = new SendMessage();
-            message.setChatId(String.valueOf(chatId));
-            message.setText(userName + ": " + receivedMessage);
-
-            try {
-                execute(message);
-            } catch (TelegramApiException e) {
-
-                e.printStackTrace();
+                commandContainer.retrieveCommand(commandIdentifier).execute(update);
+            } else {
+                commandContainer.retrieveCommand(NO.getCommandName()).execute(update);
             }
         }
     }
