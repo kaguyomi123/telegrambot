@@ -1,6 +1,6 @@
 package command;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -27,7 +27,7 @@ abstract class AbstractCommandTest {
         Update update = new Update();
         Message message = Mockito.mock(Message.class);
         Mockito.when(message.getChatId()).thenReturn(chatId);
-        Mockito.when(message.getText()).thenReturn(getCommandMessage());
+        Mockito.when(message.getText()).thenReturn(getCommandName());
         update.setMessage(message);
 
         SendMessage sendMessage = new SendMessage();

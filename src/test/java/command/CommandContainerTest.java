@@ -1,9 +1,10 @@
 package command;
 
-import org.junit.Test;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import ru.telegrambot.command.Command;
 import ru.telegrambot.command.CommandContainer;
