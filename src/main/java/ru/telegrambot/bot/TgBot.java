@@ -6,6 +6,8 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.telegrambot.command.CommandContainer;
 import ru.telegrambot.service.SendBotMessageServiceImpl;
+import ru.telegrambot.service.TelegramUserService;
+
 import javax.validation.constraints.NotNull;
 
 import static ru.telegrambot.command.CommandName.NO;
@@ -23,8 +25,8 @@ public class TgBot extends TelegramLongPollingBot {
 
     private final CommandContainer commandContainer;
 
-    public TgBot() {
-        this.commandContainer = new CommandContainer(new SendBotMessageServiceImpl(this));
+    public TgBot(TelegramUserService telegramUserService) {
+        this.commandContainer = new CommandContainer(new SendBotMessageServiceImpl(this), telegramUserService);
     }
 
     @Override
